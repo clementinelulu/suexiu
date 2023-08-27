@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>苏绣——场景</title>
+    <link href="style.css" rel="stylesheet">
+    <script src='https://unpkg.com/flipping@1.1.0/dist/flipping.web.js'></script>
+</head>
+
+<style>
+
+img { max-width: 100%; }
+
+#app {
+  width: 80%;
+  height: 130%;
+  overflow: hidden;
+  background: #1b574a;
+}
+
+.ui-big-images {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  object-fit: contain;
+}
+
+.ui-big-image {
+  width: 100%;
+  margin-right: -100%;
+  
+  img {
+    object-fit: cover;
+    object-position: center 20%;
+    @media (max-height: 600px) {
+      object-position: center center;
+    }
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+}
+
+.ui-thumbnails {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  background-color: #237764;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0 1rem;
+  padding-top: .5rem;
+  padding-right: 45%;
+  padding-right: calc( 45% + .5rem );
+}
+
+.ui-thumbnail {
+  display: block;
+  margin-right: .5rem;
+  padding: .5rem 0;
+  cursor: pointer;
+}
+
+.ui-cuticle {
+  background-color: rgb(29, 84, 59);
+  position: absolute;
+  bottom: 0;
+  height: .25rem;
+  width: 100%;
+}
+
+.ui-thumbnail > img {
+  width: auto;
+}
+
+.ui-content {
+  position: absolute;
+  width: 40%;
+  right: 5%;
+  bottom: 0;
+}
+
+.ui-articles {
+  background: #13483c;
+  color: white;
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+}
+
+.ui-article {
+  padding: 1.5rem;
+  width: 100%;
+  margin-right: -100%;
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.ui-paragraph {
+  margin: 0;
+  font-size: .7rem;
+  line-height: 1.7;
+}
+
+.ui-nav {
+  position: absolute;
+  right: 0;
+  bottom: 100%;
+  background: inherit;
+  
+  button {
+    background: #237764;
+    border: none;
+    appearance: none;
+    padding: .5em;
+    width: 2em;
+    color: #24705e;
+    font-family: monospace;
+    transition: inherit;
+    
+      transition-duration: 300ms;
+    :hover,
+    :focus {
+      background: rgb(20, 73, 38);
+      outline: none;
+    }
+    
+    &:active {
+      outline: none;
+      transform: translateY(.25em); 
+      transition-duration: 100ms;
+    }
+  }
+}
+
+.ui-heading {
+  margin: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  font-weight: normal;
+
+  &:before {
+    content: 'WORKS';
+    font-size: .5rem;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: .5rem;
+    letter-spacing: 1px;
+  }
+}
+
+/* ---------------------------------- */
+
+
+.ui-big-image { 
+  opacity: 0;
+  transform: translateX(-100%);
+
+  img {
+    transform: scale(0.85);
+  }
+}
+
+.ui-big-image[data-active] ~ .ui-big-image {
+  transform: translateX(100%);
+}
+
+.ui-big-image[data-active] {
+  opacity: 1;
+  transform: translateX(0%);
+  img {
+    transform: scale(1);
+  }
+}
+
+
+/* ---------------------------------- */
+
+.ui-article {
+  transform: translateX(-100%);
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: gold;
+    opacity: 1;
+    transition-duration: duration / 2;
+    z-index: 1;
+  }
+}
+
+.ui-article[data-active] ~ .ui-article {
+  transform: translateX(100%);
+}
+
+.ui-article[data-active] {
+  transform: translateX(0%);
+
+  &:before {
+    opacity: 0;
+  }
+}
+
+
+/* ---------------------------------- */
+
+
+.ui-thumbnail {
+  > img {
+    filter: grayscale(100%);
+    transition-duration: duration / 2;
+  }
+
+  &:active {
+    > img {
+      transform: scale(0.9);
+      transition-duration: 100ms;
+    }
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.ui-cuticle {
+  display: none;
+}
+
+.ui-thumbnail {
+  &[data-active], &:hover {
+    > img {
+      filter: grayscale(0%);
+    }
+  }
+
+  &[data-active] .ui-cuticle {
+    display: block; 
+  }
+}
+
+
+/* ---------------------------------- */
+
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #0b2f27;
+}
+
+*, *:before, *:after {
+  box-sizing: border-box;
+  position: relative;
+  transition-property: transform, opacity, filter;
+  transition-duration: duration, duration, duration;
+  transition-timing-function: cubic-bezier(.5, 0, .5, 1);
+}
+
+body, html {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+
+</style>
+
+<body>
+   
+    <div id="app" data-state="0">
+        <div class="ui-big-images">    
+          <div class="ui-big-image" data-key="0">
+            <img src="image/风景1.jpg" alt=""/>
+          </div>
+          <div class="ui-big-image" data-key="1">
+            <img src="image/风景2.png" alt=""/>
+          </div>
+          <div class="ui-big-image" data-key="2">
+            <img src="image/风景3.jpg" alt=""/>
+          </div>
+          <div class="ui-big-image" data-key="3">
+            <img src="image/风景4.jpg" alt=""/>
+          </div>
+          <div class="ui-big-image" data-key="4">
+            <img src="image/风景5.png" alt=""/>
+          </div>
+          <div class="ui-big-image" data-key="5">
+            <img src="image/风景6.jpg" alt=""/>
+          </div>
+          <div class="ui-big-image" data-key="6">
+            <img src="image/风景7.jpg" alt=""/>
+          </div>
+          <div class="ui-big-image" data-key="7">
+            <img src="image/风景8.jpg" alt=""/>
+          </div>
+        </div>
+        <div class="ui-thumbnails">
+          <div class="ui-thumbnail" tabindex="-1" data-key="0">
+            <img src="image/风景1.jpg" alt="" />
+            <div class="ui-cuticle" data-flip-key="cuticle"></div>
+          </div>
+          <div class="ui-thumbnail" tabindex="-1" data-key="1">
+            <img src="image/风景2.png" alt="" />
+            <div class="ui-cuticle" data-flip-key="cuticle"></div>
+          </div>
+          <div class="ui-thumbnail" tabindex="-1" data-key="2">
+            <img src="image/风景3.jpg" alt="" />
+            <div class="ui-cuticle" data-flip-key="cuticle"></div>
+          </div>
+          <div class="ui-thumbnail" tabindex="-1" data-key="3">
+            <img src="image/风景4.jpg" alt=""/>
+            <div class="ui-cuticle" data-flip-key="cuticle"></div>
+          </div>
+          <div class="ui-thumbnail" tabindex="-1" data-key="4">
+            <img src="image/风景5.png" alt="" />
+            <div class="ui-cuticle" data-flip-key="cuticle"></div>
+          </div>
+          <div class="ui-thumbnail" tabindex="-1" data-key="5">
+            <img src="image/风景6.jpg" alt="" />
+            <div class="ui-cuticle" data-flip-key="cuticle"></div>
+          </div>
+          <div class="ui-thumbnail" tabindex="-1" data-key="6">
+            <img src="image/风景7.jpg" alt="" />
+            <div class="ui-cuticle" data-flip-key="cuticle"></div>
+          </div>
+          <div class="ui-thumbnail" tabindex="-1" data-key="7">
+            <img src="image/风景8.jpg" alt="" />
+            <div class="ui-cuticle" data-flip-key="cuticle"></div>
+          </div>
+        </div>
+        <div class="ui-content">
+           
+          <nav class="ui-nav">
+            <button id="prev" tabindex="-1" title="Previous"><</button>
+            <button id="next" tabindex="-1" title="Next">></button>
+          </nav>
+           
+          <div class="ui-articles">
+            <article class="ui-article" data-key="0">
+              <h2 class="ui-heading">《山水》</h2>
+              <p class="ui-paragraph">Landscape: Being close to nature, returning to nature, and integrating with nature. It subtly influences the profound realm of truth, divinity, and refinement, cultivating sentiment, purifying the soul, and achieving spiritual sublimation.</p>
+            </article>
+            <article class="ui-article" data-key="1">
+              <h2 class="ui-heading">《漓江山水》</h2>
+              <p class="ui-paragraph">Created in the spring of 1984, 'Li Jiang Mountains and Rivers' showcases the profound and profound mountain terrain hidden in the picturesque scenery of the Li River from different angles.</p>
+            </article>
+            <article class="ui-article" data-key="2">
+              <h2 class="ui-heading">《油画风景》</h2>
+              <p class="ui-paragraph">Oil Painting Landscape:Nature endows us with beautiful scenery, so we should use our lives to read nature. Sometimes it is the unity of form, sometimes it is the combination of colors, which should be analyzed and grasped according to the needs of the picture.</p>
+            </article>
+            <article class="ui-article" data-key="3">
+              <h2 class="ui-heading">《迎客松》</h2>
+              <p class="ui-paragraph">Welcome Song "was written in 1959 to celebrate the 10th anniversary of the founding of the People's Republic of China.</p>
+            </article>
+            <article class="ui-article" data-key="4">
+              <h2 class="ui-heading">《五湖旧约——扁舟》</h2>
+              <p class="ui-paragraph">The Old Testament of the Five Lakes - Flat Boats</p>
+            </article>
+            <article class="ui-article" data-key="5">
+              <h2 class="ui-heading">《聚宝盆》</h2>
+              <p class="ui-paragraph">Abundant financial resources; Red sun at the head, symbolizing good fortune at the head; The rising sun rises in the east, magnificent and magnificent, with strong authority and great achievements</p>
+            </article>
+            <article class="ui-article" data-key="6">
+                <h2 class="ui-heading">《海纳百川》</h2>
+                <p class="ui-paragraph">Carrying new responsibilities in the new era and welcoming the 20th National Congress of the Communist Party of China. Pray for the Party: Strive for a new journey and contribute to a new era.</p>
+              </article>
+            <article class="ui-article" data-key="7">
+                <h2 class="ui-heading">《江南水乡》</h2>
+                <p class="ui-paragraph">Jiangnan Water Town "gathers the most common scenery in Lin Fengmian's works: distant mountains, near water, fields, trees, light boats, etc.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+      
+</body>
+<script>
+    console.clear();
+ 
+ const elPrevButton = document.querySelector('#prev');
+ const elNextButton = document.querySelector('#next');
+ const flipping = new Flipping();
+  
+ const elImages = Array.from(document.querySelectorAll('.ui-big-image'));
+ const elThumbnails = Array.from(document.querySelectorAll('.ui-thumbnail'));
+  
+ let state = {
+   photo: 0
+ };
+  
+ function send(event) {
+   // read cuticle positions
+   flipping.read();
+    
+   const elActives = document.querySelectorAll('[data-active]');
+    
+   Array.from(elActives)
+     .forEach(el => el.removeAttribute('data-active'));
+  
+   switch (event) {
+     case 'PREV':
+       state.photo--;
+       // Math.max(state.photo - 1, 0);
+       break;
+     case 'NEXT':
+       state.photo++;
+       // Math.min(state.photo + 1, elImages.length - 1);
+       break;
+     default:
+       state.photo = +event;
+       break;
+   }
+    
+   var len = elImages.length;
+   // Loop Around
+   //state.photo = ( ( state.photo % len) + len ) % len;
+   state.photo = Math.max(0, Math.min( state.photo, len - 1) );
+  
+   Array.from(document.querySelectorAll(`[data-key="${state.photo}"]`))
+     .forEach( el => {
+     el.setAttribute('data-active', true);
+   });
+    
+   // execute the FLIP animation
+   flipping.flip();
+ }
+  
+ elThumbnails.forEach( thumb => { 
+   thumb.addEventListener('click', () => {
+     send(thumb.dataset.key);
+   });
+ });
+  
+ elPrevButton.addEventListener('click', () => {
+   send('PREV');
+ });
+  
+ elNextButton.addEventListener('click', () => {
+   send('NEXT');
+ });
+  
+ send(0);
+</script>
+</html>
